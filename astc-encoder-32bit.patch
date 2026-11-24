@@ -1,0 +1,15 @@
+error: comparison is always false due to limited range of data type [-Werror=type-limits]
+--- astc-encoder-5.7.1/Source/ThirdParty/tinyexr.h.orig	2026-11-03 22:25:18.000000000 +0100
++++ astc-encoder-5.7.1/Source/ThirdParty/tinyexr.h	2026-11-24 18:16:11.671898193 +0100
+@@ -6770,7 +6770,10 @@ static int DecodeChunk(EXRImage *exr_ima
+     size_t total_data_len =
+         size_t(data_width) * size_t(data_height) * size_t(num_channels);
+     const bool total_data_len_overflown =
+-        sizeof(void *) == 8 ? (total_data_len >= 0x4000000000) : false;
++#ifdef __LP64__
++        sizeof(void *) == 8 ? (total_data_len >= 0x4000000000) :
++#endif
++	false;
+     if ((total_data_len == 0) || total_data_len_overflown) {
+       if (err) {
+         std::stringstream ss;
